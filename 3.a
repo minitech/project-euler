@@ -1,0 +1,33 @@
+bits 64
+
+section .code
+
+global _start
+
+_start:
+	mov rdi, 600851475143
+	mov rbx, 2
+	
+	continue:
+		mov rax, rdi
+		mov rdx, 0
+		idiv rbx
+
+		cmp rdx, 0
+		jnz nonfactor
+
+		mov rdi, rax
+		mov rsi, rbx
+		dec rbx
+
+		nonfactor:
+
+		inc rbx
+		cmp rbx, rdi
+		jle continue
+	
+	debug_here: ; Look at rsi.
+
+	mov rax, 1
+	mov rbx, 0
+	int 80h
