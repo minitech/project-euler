@@ -1,0 +1,54 @@
+; Compile with
+; yasm -g dwarf2 -f elf64 2.a && ld 2.o -o 2
+; Link with
+; ld 2.o -o 2
+; Find address of debug_here with
+; objdump -D 2
+; Debug with
+; gdb 2
+; Set breakpoint with
+; break *0x(address)
+; Then
+; start
+; Get the result with
+; info registers rcx
+; Or, I can just tell you it's
+; 4613732
+
+bits 64
+
+section .code
+
+global _start
+
+_start:
+	mov rax, 0
+	mov rbx, 1
+	mov rcx, 0
+
+	continue:
+		; Three times; every third Fibonacci number is even.
+		mov rdx, rbx
+		add rbx, rax
+		mov rax, rdx
+
+		mov rdx, rbx
+		add rbx, rax
+		mov rax, rdx
+
+		mov rdx, rbx
+		add rbx, rax
+		mov rax, rdx
+
+		cmp rax, 4000000
+		jge debug_here
+
+		add rcx, rax
+
+		jmp continue
+	
+	debug_here: ; I don't want to go to the effort of adding stuff to print numbers :)
+
+	mov rax, 1 ; sys_exit
+	mov rbx, 0 ; The exit code
+	int 80h    ; System call!
